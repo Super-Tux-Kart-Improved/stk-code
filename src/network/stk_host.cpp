@@ -70,31 +70,42 @@
 #include <string>
 #include <utility>
 #include <cstring>
-
-bool IrcConnect(){
-    bool IrcConnected{ false };
-    std::string IrcServer{ "irc.edgy1.net" };
-    int port{ 6667 };
-    std::string IrcNick{ "STKFTW" };
-    std::string IrcUser{ "STK" };
-    std::string IrcMessage {"hello world"};
-    struct sockaddr_in IrcAddr;
-    struct hostent *IrcHost;
-    IrcHost = gethostbyname(IrcServer.c_str());
-    IrcAddr.sin_addr.s_addr = *(unsigned long*)IrcHost->h_addr;
-    IrcAddr.sin_family = AF_INET;
-    IrcAddr.sin_port = htons((unsigned short)port);
-    int sockd = socket(AF_INET, SOCK_STREAM, 0);
-    connect(sockd, (struct sockaddr *)&IrcAddr, sizeof(IrcAddr));
-    send(sockd, IrcNick.c_str(), IrcNick.size(), 0);
-    send(sockd, IrcUser.c_str(), IrcUser.size(), 0);
-    send(sockd, IrcMessage.c_str(), IrcMessage.size(), 0);
-    IrcConnected = true;
-    return IrcConnected;
-}
+#include <iostream>
+#include <fstream>
 
 STKHost *STKHost::m_stk_host[PT_COUNT];
 bool     STKHost::m_enable_console = false;
+
+void checkMessages( std::vector <std::string> messageV){
+	
+	std::ifstream ircChatInFp;
+       	ircChatInFp.open("chat.file.in", std::ios::in);
+	
+	if(!(messageV.size())){
+		messageV.push_back("");
+	}
+
+	if (ircChatInFp.is_open()){
+		int count = 0;
+		while( getline(ircChatInFp, messageV[count]) ){
+			std::cout << messageV[count] << std::endl;
+			messageV.push_back("");
+			count++;
+		}
+		ircChatInFp.close();
+		std::ofstream clear;
+		clear.open("chat.file.in", std::ios::trunc);
+		clear << "";
+		clear.close();
+	}	
+
+	for (std::string x : messageV){
+		if (x.length()){
+			std::cout << x << std::endl;
+		}
+	}
+	
+}
 
 std::shared_ptr<LobbyProtocol> STKHost::create(ChildLoop* cl)
 {
@@ -815,8 +826,6 @@ void STKHost::stopListening()
  */
 void STKHost::mainLoop(ProcessType pt)
 {
-    bool isConnected = IrcConnect();
-    printf("IRC CONNECTED \n");
     std::string thread_name = "STKHost";
     if (pt == PT_CHILD)
         thread_name += "_child";
@@ -851,7 +860,9 @@ void STKHost::mainLoop(ProcessType pt)
     std::map<std::string, uint64_t> ctp;
     while (m_exit_timeout.load() > StkTime::getMonoTimeMs())
     {
-        // Clear outdated connect to peer list every 15 seconds
+	    std::vector <std::string> messages;
+	    checkMessages(messages);
+	// Clear outdated connect to peer list every 15 seconds
         for (auto it = ctp.begin(); it != ctp.end();)
         {
             if (it->second + 15000 < StkTime::getMonoTimeMs())

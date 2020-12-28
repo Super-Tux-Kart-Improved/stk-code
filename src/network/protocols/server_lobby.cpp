@@ -64,7 +64,7 @@
 #include <iterator>
 #include <vector>
 #include <string>
-
+#include <sstream>
 // We use max priority for all server requests to avoid downloading of addons
 // icons blocking the poll request in all-in-one graphical client server
 
@@ -783,15 +783,25 @@ void ServerLobby::handleChat(Event* event)
 
     core::stringw message;
     event->data().decodeString16(&message, 360/*max_len*/);
-	std::ofstream outChatFIle;
+	std::ofstream outChatFile;
 
-	outChatFIle.open("chat.file.out", std::ios::app);
-	inCatFile << StringUtils::wideToUtf8(message).c_str() << std::endl;
-	outChatFIle.close();
+	outChatFile.open("chat.file.out", std::ios::app);
+	outChatFile << StringUtils::wideToUtf8(message).c_str() << std::endl;
+	outChatFile.close();
 	
 	std::ifstream inChatFile ("chat.file.in");
-	std::string IRCChatIn (((std::istreambuf_iterator<char>(inChatFile)), std::istreambuf_iterator<char>()));
-	std::cout << IRCChatIn << std::endl;	
+	//std::string IRCChatIn (((std::istreambuf_iterator<char>(inChatFile)), std::istreambuf_iterator<char>()));
+	std::string IRCChatIn ("F");
+	
+	std::ostringstream ss;
+	ss << inChatFile.rdbuf();
+	IRCChatIn = ss.str();
+
+	inChatFile.close();
+	std::cout << IRCChatIn << std::endl;
+	std::ofstream clear ("chat.file.in", std::ios::trunc);
+	clear << "";
+	clear.close();
 	
     KartTeam target_team = KART_TEAM_NONE;
     if (event->data().size() > 0)

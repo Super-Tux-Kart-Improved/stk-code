@@ -84,6 +84,12 @@ bool pollCommand()
 }   // pollCommand
 #endif
 
+void getIrcMessages(std::vector <std::string> * retVal){
+	
+	std::cout << "called it" << std::endl;
+
+}
+
 // ----------------------------------------------------------------------------
 void mainLoop(STKHost* host)
 {
@@ -182,6 +188,7 @@ void mainLoop(STKHost* host)
         {
             std::cout << "Unknown command: " << str << std::endl;
         }
+
     }   // while !stop
     main_loop->requestAbort();
 }   // mainLoop
