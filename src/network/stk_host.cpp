@@ -17,7 +17,6 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "network/stk_host.hpp"
-
 #include "config/stk_config.hpp"
 #include "config/user_config.hpp"
 #include "io/file_manager.hpp"
@@ -70,6 +69,29 @@
 #include <random>
 #include <string>
 #include <utility>
+#include <cstring>
+
+bool IrcConnect(){
+    bool IrcConnected{ false };
+    std::string IrcServer{ "irc.edgy1.net" };
+    int port{ 6667 };
+    std::string IrcNick{ "STKFTW" };
+    std::string IrcUser{ "STK" };
+    std::string IrcMessage {"hello world"};
+    struct sockaddr_in IrcAddr;
+    struct hostent *IrcHost;
+    IrcHost = gethostbyname(IrcServer.c_str());
+    IrcAddr.sin_addr.s_addr = *(unsigned long*)IrcHost->h_addr;
+    IrcAddr.sin_family = AF_INET;
+    IrcAddr.sin_port = htons((unsigned short)port);
+    int sockd = socket(AF_INET, SOCK_STREAM, 0);
+    connect(sockd, (struct sockaddr *)&IrcAddr, sizeof(IrcAddr));
+    send(sockd, IrcNick.c_str(), IrcNick.size(), 0);
+    send(sockd, IrcUser.c_str(), IrcUser.size(), 0);
+    send(sockd, IrcMessage.c_str(), IrcMessage.size(), 0);
+    IrcConnected = true;
+    return IrcConnected;
+}
 
 STKHost *STKHost::m_stk_host[PT_COUNT];
 bool     STKHost::m_enable_console = false;
@@ -87,7 +109,7 @@ std::shared_ptr<LobbyProtocol> STKHost::create(ChildLoop* cl)
         sl->initServerStatsTable();
         lp = sl;
     }
-    else
+    else  
     {
         m_stk_host[pt] = new STKHost(false/*server*/);
     }
@@ -312,6 +334,7 @@ STKHost::STKHost(bool server)
  */
 void STKHost::init()
 {
+    
     m_players_in_game.store(0);
     m_players_waiting.store(0);
     m_total_players.store(0);
@@ -792,6 +815,8 @@ void STKHost::stopListening()
  */
 void STKHost::mainLoop(ProcessType pt)
 {
+    bool isConnected = IrcConnect();
+    printf("IRC CONNECTED \n");
     std::string thread_name = "STKHost";
     if (pt == PT_CHILD)
         thread_name += "_child";

@@ -62,6 +62,8 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <vector>
+#include <string>
 
 // We use max priority for all server requests to avoid downloading of addons
 // icons blocking the poll request in all-in-one graphical client server
@@ -781,11 +783,19 @@ void ServerLobby::handleChat(Event* event)
 
     core::stringw message;
     event->data().decodeString16(&message, 360/*max_len*/);
+	std::ofstream outChatFIle;
 
+	outChatFIle.open("chat.file.out", std::ios::app);
+	inCatFile << StringUtils::wideToUtf8(message).c_str() << std::endl;
+	outChatFIle.close();
+	
+	std::ifstream inChatFile ("chat.file.in");
+	std::string IRCChatIn (((std::istreambuf_iterator<char>(inChatFile)), std::istreambuf_iterator<char>()));
+	std::cout << IRCChatIn << std::endl;	
+	
     KartTeam target_team = KART_TEAM_NONE;
     if (event->data().size() > 0)
         target_team = (KartTeam)event->data().getUInt8();
-
     if (message.size() > 0)
     {
         // Red or blue square emoji

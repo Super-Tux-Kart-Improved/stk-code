@@ -83,11 +83,6 @@ void OptionsScreenAudio::init()
     sfx->setState( UserConfigParams::m_sfx );
     music->setState( UserConfigParams::m_music );
 
-    if(!UserConfigParams::m_sfx)
-        getWidget<SpinnerWidget>("sfx_volume")->setActive(false);
-    if(!UserConfigParams::m_music)
-        getWidget<SpinnerWidget>("music_volume")->setActive(false);
-
 }   // init
 
 // -----------------------------------------------------------------------------
@@ -160,15 +155,9 @@ void OptionsScreenAudio::eventCallback(Widget* widget, const std::string& name, 
         Log::info("OptionsScreenAudio", "Music is now %s", ((bool) UserConfigParams::m_music) ? "on" : "off");
 
         if(w->getState() == false)
-        {
             music_manager->stopMusic();
-            getWidget<SpinnerWidget>("music_volume")->setActive(false);
-        }
         else
-        {
             music_manager->startMusic();
-            getWidget<SpinnerWidget>("music_volume")->setActive(true);
-        }
     }
     else if(name == "sfx_enabled")
     {
@@ -180,11 +169,6 @@ void OptionsScreenAudio::eventCallback(Widget* widget, const std::string& name, 
         if (UserConfigParams::m_sfx)
         {
             SFXManager::get()->quickSound("horn");
-            getWidget<SpinnerWidget>("sfx_volume")->setActive(true);
-        }
-        else
-        {
-            getWidget<SpinnerWidget>("sfx_volume")->setActive(false);
         }
     }
 }   // eventCallback
