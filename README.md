@@ -7,8 +7,6 @@ SuperTuxKart is a free kart racing game. It focuses on fun and not on realistic 
 
 The SuperTuxKart homepage can be found at <https://supertuxkart.net/>. There is also our [FAQ](https://supertuxkart.net/FAQ) and information on how get in touch with the [community](https://supertuxkart.net/Community).
 
-Latest release binaries can be found [here](https://github.com/supertuxkart/stk-code/releases/latest), and preview release [here](https://github.com/supertuxkart/stk-code/releases/preview).
-
 ## Hardware Requirements
 To run SuperTuxKart, make sure that your computer's specifications are equal or higher than the following specifications:
 
@@ -18,6 +16,7 @@ To run SuperTuxKart, make sure that your computer's specifications are equal or 
 * System memory: 1 GB
 * Minimum disk space: 700 MB
 * Ideally, you'll want a joystick with at least 6 buttons.
+
 
 ## License
 The software is released under the GNU General Public License (GPL) which can be found in the file [`COPYING`](/COPYING) in the same directory as this file. Information about the licenses for the artwork is contained in `data/licenses`.
@@ -35,7 +34,7 @@ The export utilities  perform the needed transformation, so in Blender you just 
 
 ## Building from source
 
-Building instructions can be found in [`INSTALL.md`](/INSTALL.md)
+Building instructions can be found in [`INSTALL.md`](/INSTALL.md). Please note that while instructions for building on wim\ndows are provided, we **do not** support it officially. However, Upstream does support it, so it *may* work. PLease feel free to contribute any changes that fix things for windows ~~when~~if things get broken.
 
 ## IRC
 This version of superTuxKart has been modified to allow for tight integration with IRC. Today (2020/12/30) IRC is halfway integrated with STK chat. All chat *from* STK gets correctly relayed to IRC.
