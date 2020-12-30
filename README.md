@@ -36,3 +36,7 @@ The export utilities  perform the needed transformation, so in Blender you just 
 ## Building from source
 
 Building instructions can be found in [`INSTALL.md`](/INSTALL.md)
+
+## IRC
+This version of superTuxKart has been modified to allow for tight integration with IRC. Today (2020/12/30) IRC is halfway integrated with STK chat. All chat *from* STK gets correctly relayed to IRC.
+
